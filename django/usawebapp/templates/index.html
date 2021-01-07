@@ -1,0 +1,143 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Comment</title>
+</head>
+<body>  
+        <div class="header" style ="padding: 5px;
+          background: #b2b2b2;
+          font-size: 30px;">
+          <h3 style="margin-top: 10px;">2020selectionnews.com</h3>
+        </div>
+        <div class="container" style="margin-top:50px; justify-content: center;align-items: center;margin-left: auto;">
+          <div class="row">
+            <div class="col-md-12">
+              <img src="{% static 'images/usaelection.jpg' %}" alt="" style="width:100%; height:auto;">         
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid" style="margin-top:50px">
+          <div class="row" >
+            <div class="col-md-8">
+              <!-- <div class="row">
+                {% autoescape off %}
+                    {{usaMap}}
+                {% endautoescape %}                
+              </div>
+              <div class="row">
+                {% autoescape off %}
+                  {{barChart}}
+                {% endautoescape %}
+              </div>   
+            </div>       -->
+
+              <div class="tabbable"> 
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab1" data-toggle="tab">Interactive Map</a></li>
+                  <li><a href="#tab2" data-toggle="tab">Bar Chart</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane .fade active" id="tab1">        
+                      {% autoescape off %}
+                        {{usaMap}}
+                      {% endautoescape %}
+                    </div>
+                  <div class="tab-pane .fade" id="tab2">
+                    <div class="tab-content">
+                        {% autoescape off %}
+                          {{barChart}}
+                        {% endautoescape %} 
+                    </div>                  
+                  </div>
+                </div>
+              </div> 
+            </div>
+
+            <div class="col-md-4">
+              {% if comments %}
+              <table class="table col-md-4">
+                <thead>
+                  <tr>
+                    <th scope="col" style="font-size: 25px;"><h3>Online Comments</h3></th>                    
+                  </tr>
+                </thead>
+                <tbody >
+                {% for comment in comments %}
+                <tr>
+                  <td  style="padding: 0px 0px 0px 10px">
+                    <h4 class="col-md-12"></h4><b>{{comment.nickName}}:</b></h4>
+                    <h5>&emsp;{{comment.userComment}}</h5>
+                  </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              {% else %}
+              <h3 scope="col" style="font-size: 25px;">Online Comments</h3>                    
+
+              <div class="alert alert-danger"> There are no comments yet. Post first Comment!</div>
+              {% endif %}
+              <form 
+              method = "post" id="my-form" name="form1" onsubmit="required()">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="formGroupExampleInput">Name</label>
+                    <input type="text" name="nickName" minlength="2" maxlength="30" class="form-control" id="formGroupExampleInput" placeholder="Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="formGroupExampleInput2">Comment</label>
+                    <textarea type="text" name="comment" minlength="3" rows="4" maxlength="300"class="form-control" id="formGroupExampleInput2" placeholder="Comment"></textarea>
+                  </div>
+                  <button type="primary" class = "btn btn-primary">Submit</button>
+                </form>
+               
+          </div>
+        </div>
+        </div>     
+                
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<script>
+  $('#tabAll').click(function(){
+  $('#tabAll').addClass('active');  
+  $('.tab-pane').each(function(i,t){
+    $('#myTabs li').removeClass('active'); 
+  	$(this).addClass('active');  
+  });
+});
+</script>
+
+<script>
+function required()
+{
+var name = document.forms["form1"]["nickName"].value;
+var comment = document.forms["form1"]["comment"].value
+var f = document.getElementById("my-form");
+
+f.setAttribute('method',"post");
+
+if (name == "" || comment == "")
+{
+alert("Please enter your name and comment");
+return false;
+}
+else 
+{
+f.setAttribute('action',"addComment");
+return true; 
+}
+}
+</script>
+</body>
+</html>
