@@ -1,5 +1,7 @@
 from django.shortcuts import render, HttpResponse,redirect
 from .models import Comment
+from .models import Review
+
 import plotly.io as pio
 import plotly.express as px
 import pandas as pd
@@ -9,7 +11,7 @@ import plotly.graph_objects as go
 # Create your views here.
 def index(request):
 
-    wide_df = pd.read_csv('C:/Users/Baha/Desktop/django/usawebapp/tablo8.csv')
+    wide_df = pd.read_csv('C:/Users/Baha/Desktop/m-s_233/django/usawebapp/tablo8.csv')
 
     fig = px.bar(wide_df, x="Candidate",
              y=["Total Vote (Million)", "Total Delegate Count", "Total Vote Percentage (%)"],
@@ -19,7 +21,7 @@ def index(request):
     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
     barChart = pio.to_html(fig,include_plotlyjs=False, full_html = False)
 
-    df = pd.read_csv('C:/Users/Baha/Desktop/django/usawebapp/tablo9.csv')
+    df = pd.read_csv('C:/Users/Baha/Desktop/m-s_233/django/usawebapp/tablo9.csv')
 
     
     for col in df.columns:
@@ -53,9 +55,20 @@ def index(request):
     usaMap = pio.to_html(figMap,include_plotlyjs=False, full_html = False)
 
     comments = Comment.objects.all()
+    firstComments = Comment.objects.all().order_by('-id')[:6]
 
-    return render(request,"index.html",{"barChart" : barChart,"usaMap" : usaMap ,"comments" : comments})
+    reviews = Review.objects.all()
+    firstReviews = Review.objects.all().order_by('-id')[:6]
 
+
+    return render(request,"index.html",{"barChart" : barChart,"usaMap" : usaMap ,"comments" : comments, "reviews" : reviews, "firstComments" : firstComments,"firstReviews" : firstReviews })
+
+
+def comments(request):
+    comments = Comment.objects.all()
+    reviews = Review.objects.all()
+    
+    return render(request,"comments.html", {"comments" : comments, "reviews" : reviews} )
 
 def addComment(request):
     if request.method ==  "GET":
@@ -68,7 +81,14 @@ def addComment(request):
         newComment.save()
         return redirect("/")
 
-# def barChart(request):
+def addReview(request):
+    if request.method ==  "GET":
+        return redirect("/")
+    else:
+        expertName = request.POST.get("expertName")
+        expertCompany = request.POST.get("company")
+        review = request.POST.get("review")
+        newReview = Review(expertName = expertName, expertCompany = expertCompany, review = review)
 
-    
-#     return render(request,"plotly_demo.html",{"div" : div})
+        newReview.save()
+        return redirect("/")

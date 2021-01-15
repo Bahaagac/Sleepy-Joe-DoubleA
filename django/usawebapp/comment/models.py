@@ -9,3 +9,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return "Name: " +self.nickName + " || " + "Comment: " + self.userComment
+
+
+class Review(models.Model):
+    expertName = models.CharField(max_length = 30,verbose_name = "expertName")
+    expertCompany = models.CharField(max_length = 30,verbose_name = "expertCompany")
+    review = models.CharField(max_length = 300,verbose_name = "expertReview")
+
+    def __str__(self):
+        return "expertName: " +self.expertName + " || " + "expertCompany: " + self.expertCompany + " || " + "expertReview" + self.review

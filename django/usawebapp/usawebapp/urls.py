@@ -17,9 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from comment import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
+    path('comments.html/', views.comments),
     path('addComment', views.addComment),
+    path('addReview', views.addReview),
+
 
 ]
